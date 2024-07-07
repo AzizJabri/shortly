@@ -1,5 +1,8 @@
-const Link = require('../models/Link');
+const Link = require('../models/Link')
+const Click = require('../models/Click')
+const AnonymousLink = require('../models/AnonymousLink');
 const {generateUrl} = require('../utils/urlUtils');
+const uuid = require('uuid');
 
 const createLink = async (req, res) => {
     try {
@@ -34,11 +37,67 @@ const createLink = async (req, res) => {
     }
 }
 
+const createAnonymousLink = async (req, res) => {
+    try {
+        const { long_url } = req.body;
+        if (!long_url) {
+            return res.status(400).json({ type: "error", message: "URL is required" });
+        }
+        const generateUniqueUrl = async () => {
+            let short_url;
+            let existingLink;
+            do {
+                short_url = generateUrl(6);
+                existingLink = await AnonymousLink.findOne({ short_url }) || await Link.findOne({ short_url });
+            } while (existingLink);
+            return short_url;
+        };
+
+        const short_url = await generateUniqueUrl();
+        var session_id;
+        try{
+            session_id = req.headers.cookie.split('=')[1];
+        }catch{
+            session_id = uuid.v4();
+        }
+
+        const newLink = new AnonymousLink({
+            long_url,
+            short_url,
+            session: session_id
+        });
+        res.cookie('session', session_id, { maxAge: 86400000, httpOnly: true });
+        await newLink.save();
+        return res.status(201).json({ type: "success", message: "Link created successfully", link: newLink });
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({ type: "error", message: "Internal server error" });
+    }
+}
+
 const getLinks = async (req, res) => {
     try {
         const links = await Link.find({ user: req.user.id });
         return res.status(200).json({ type: "success", links });
     } catch (error) {
+        console.log(error);
+        return res.status(500).json({ type: "error", message: "Internal server error" });
+    }
+}
+
+const getAnonymousLinks = async (req, res) => {
+    try {
+        let session_id;
+        try{
+            session_id = req.headers.cookie.split('=')[1] || req.query.session;
+        }catch{
+            return res.status(200).json({ type: "success", links: [] });
+        }
+        let links = await AnonymousLink.find({ session: session_id });
+        links.forEach(link => link.ip = undefined);
+        return res.status(200).json({ type: "success", links });
+    }
+    catch (error) {
         console.log(error);
         return res.status(500).json({ type: "error", message: "Internal server error" });
     }
@@ -67,12 +126,24 @@ const visitLink = async (req, res) => {
         if (!id) {
             return res.status(400).json({ type: "error", message: "ID is required" });
         }
-        const link = await Link.findOne({ short_url: id });
+        const link = await Link.findOne({ short_url: id }) || await AnonymousLink.findOne({ short_url: id });
         if (!link) {
             return res.status(404).json({ type: "error", message: "Link not found" });
         }
-        link.totalVisits += 1;
-        await link.save();
+        //increment totalVisits if link is not anonymous
+        if (link instanceof Link) {
+            link.totalVisits++;
+            await link.save();
+        }
+
+        const newClick = new Click({
+            link: link._id,
+            ipAddress: req.ip,
+            userAgent: req.headers['user-agent'],
+            referer: req.headers['referer'] || "Direct",
+            platform: req.headers['sec-ch-ua-platform'] || "Unknown",
+        });
+        await newClick.save();
         return res.redirect(link.long_url);
     } catch (error) {
         console.log(error);
@@ -84,5 +155,7 @@ module.exports = {
     createLink,
     getLinks,
     deleteLink,
-    visitLink
+    visitLink,
+    createAnonymousLink,
+    getAnonymousLinks
 }

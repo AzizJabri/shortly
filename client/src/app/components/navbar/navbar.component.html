@@ -1,0 +1,55 @@
+<nav class="navbar bg-base-300 py-2 md:py-4 rounded-b-2xl shadow-2xl px-4 sm:px-6 lg:px-12">
+    <div class="navbar-start">
+      <div class="dropdown">
+        <div tabindex="0" role="button" class="btn btn-ghost lg:hidden">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-5 w-5"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M4 6h16M4 12h8m-8 6h16" />
+          </svg>
+        </div>
+        <ul
+          tabindex="0"
+          class="menu menu-sm dropdown-content bg-base-300 rounded-box z-[1] mt-3 w-52 p-2 shadow-lg">
+          <li>
+            <a [routerLink]="['/']"  class="text-base-content hover:bg-base-100 hover:text-white px-3 py-2 rounded-md font-medium" routerLinkActive="text-white" [routerLinkActiveOptions]="{ exact: true }">Home</a>
+          </li>
+          <li>
+            <a [routerLink]="['/about']" class="text-base-content hover:bg-base-100 hover:text-white px-3 py-2 rounded-md font-medium" routerLinkActive="text-white">About</a>
+          </li>
+          <li>
+            <a [routerLink]="['/pricing']" class="text-base-content hover:bg-base-100 hover:text-white px-3 py-2 rounded-md font-medium" routerLinkActive="text-white">Pricing</a>
+          </li>
+        </ul>
+      </div>
+      <a class="md:text-2xl lg:text-2xl text-lg font-bold cursor-pointer text-white">Shortly.tn</a>
+    </div>
+    <div class="navbar-center hidden lg:flex">
+      <ul class="menu menu-horizontal px-1">
+        <li class="px-2">
+            <a [routerLink]="['/']"  class="text-base-content hover:bg-base-100 hover:text-white px-3 py-2 rounded-md font-medium" routerLinkActive="text-white underline" [routerLinkActiveOptions]="{ exact: true }">Home</a>
+
+        </li>
+        <li class="px-2">
+            <a [routerLink]="['/about']" class="text-base-content hover:bg-base-100 hover:text-white px-3 py-2 rounded-md font-medium" routerLinkActive="text-white underline">About</a>
+
+        </li>
+        <li class="px-2">
+            <a [routerLink]="['/pricing']" class="text-base-content hover:bg-base-100 hover:text-white px-3 py-2 rounded-md font-medium" routerLinkActive="text-white underline">Pricing</a>
+        </li>
+      </ul>
+    </div>
+    <div class="navbar-end">
+        <div class="md:ml-10 flex items-baseline space-x-4">
+            <a routerLink="/auth/login" class="btn btn-sm md:btn-md btn-ghost rounded-full text-white">Login</a>
+            <a routerLink="/auth/register" class="btn btn-sm md:btn-md btn-primary rounded-full px-4 md:px-6">Sign up</a>
+        </div>
+    </div>
+</nav>

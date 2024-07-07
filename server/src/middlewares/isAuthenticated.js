@@ -4,7 +4,7 @@ const { verifyToken } = require("../utils/tokenUtils");
 
 const isAuthenticated = async (req, res, next) => {
     try {
-        const token = req.headers.authorization
+        let token = req.headers.authorization
         if (!token) {
             return res.status(401).json({
                 type: "error",

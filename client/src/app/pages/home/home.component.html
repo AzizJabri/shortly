@@ -1,0 +1,39 @@
+<section class="py-16 mb-10">
+    <div class="container mx-auto flex flex-col-reverse lg:flex-row items-center px-6">
+      <div class="lg:w-1/2 lg:pr-12">
+        <h1 class="text-5xl lg:text-7xl font-bold mb-4 text-white">More than shorter links</h1>
+        <p class="text-lg mb-6 md:mb-10">Build your brand's recognition and get detailed insights on how your links are performing</p>
+        <a href="/auth/register" class="btn btn-primary rounded-full btn-wide text-white">Get Started</a>
+      </div>
+      <div class="lg:w-1/2 mb-8 lg:mb-0">
+        <img  ngSrc="../../../assets/hero.svg" alt="Placeholder Image" class="w-full h-auto" width="300" height="300" priority>
+      </div>
+    </div>
+</section>
+
+
+<section class="bg-base-200 md:py-12 py-6 rounded-xl mx-5 md:mx-10 mb-5">
+    <div class="container mx-auto md:px-12 px-4">
+      <form [formGroup]="form" (ngSubmit)="onSubmit()" class="flex flex-col lg:flex-row lg:items-center">
+        <input type="text" formControlName="long_url" [ngClass]="{ 'input-error': submitted && f['long_url'].errors }" placeholder="Shorten your link here..." class="input input-bordered w-full lg:w-4/5 lg:mr-4 mb-4 lg:mb-0 text-xl" >
+        <div *ngIf="submitted && f['long_url'].errors" class="text-error mt-1">
+          <span *ngIf="f['long_url'].errors['required']">The URL is required</span>
+          <span *ngIf="f['long_url'].errors['pattern']">Invalid URL</span>
+        </div>
+        <button class="btn btn-primary text-white w-full lg:w-1/5"
+            [disabled]="loading">
+            <span *ngIf="loading" class="loading loading-spinner"></span>
+            Shorten it!
+        </button>
+      </form>
+    </div>
+</section> 
+
+
+<section class="mx-5 md:mx-10 mb-10">
+<div *ngFor="let link of links" class="bg-base-200 py-2 rounded-xl">
+    <app-anonymous-link [link]="link"></app-anonymous-link>
+</div>
+
+</section>
+

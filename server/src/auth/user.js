@@ -53,7 +53,9 @@ const register = async (req, res) => {
         const newUser = new user({
             email,
             password: hashedPassword,
-            id: uuidv4()
+            id: uuidv4(),
+            role: "user",
+            plan: "free"
         });
         await newUser.save();
         return res.status(201).json({type:"success", message:"User created successfully"});

@@ -1,5 +1,11 @@
 const mongoose = require('mongoose');
 
+//roles
+const roles = ['user', 'admin', 'superadmin'];
+
+//plans
+const plans = ['free', 'premium'];
+
 const userSchema = new mongoose.Schema({
     email: {
         type: String,
@@ -13,6 +19,16 @@ const userSchema = new mongoose.Schema({
     createdAt: {
         type: Date,
         default: Date.now
+    },
+    role: {
+        type: String,
+        enum: roles,
+        default: 'user'
+    },
+    plan: {
+        type: String,
+        enum: plans,
+        default: 'free'
     }
 });
 

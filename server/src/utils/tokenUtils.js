@@ -30,8 +30,12 @@ const generateRefreshToken = (user) => {
 }
 
 const verifyToken = (token) => {
-    const decoded = jwt.verify(token, JWT_SECRET);
-    return decoded;
+    try {
+        const decoded = jwt.verify(token, JWT_SECRET);
+        return decoded;
+    } catch (error) {
+        return null;
+    }
 };
 
 module.exports = {

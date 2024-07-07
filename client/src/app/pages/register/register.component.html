@@ -1,0 +1,51 @@
+
+<div class="flex flex-col items-center justify-center min-h-screen py-8">
+    <div class="breadcrumbs text-sm">
+        <ul>
+          <li><a [routerLink]="['/']">Home</a></li>
+          <li>Register</li>
+        </ul>
+      </div>
+    <div class="w-full max-w-lg bg-base-200 p-8 rounded-lg shadow-xl">
+        <h4 class="text-3xl font-bold mb-6 text-white text-center">Register</h4>
+        <p class="mb-6">Enter your details below to create an account.</p>
+        <form [formGroup]="form" (ngSubmit)="onSubmit()">
+            <div class="mb-4">
+                <label class="label">
+                    <span class="text-white">Email</span>
+                </label>
+                <input type="email" placeholder="name@example.com" formControlName="email" class="input input-bordered w-full" [ngClass]="{ 'input-error': submitted && f['email'].errors }" />
+                <div *ngIf="submitted && f['email'].errors" class="text-error mt-1">
+                    <span *ngIf="f['email'].errors['required']">Email is required</span>
+                    <span *ngIf="f['email'].errors['email']">Invalid email address</span>
+                </div>
+            </div>
+            <div class="mb-4">
+                <label class="label">
+                    <span class="text-white">Password</span>
+                </label>
+                <input type="password" placeholder="Enter your password" formControlName="password" class="input input-bordered w-full" [ngClass]="{ 'input-error': submitted && f['password'].errors }" />
+                <div *ngIf="submitted && f['password'].errors" class="text-error mt-1">
+                    <span *ngIf="f['password'].errors['required']">Password is required</span>
+                </div>
+            </div>
+            <div class="mb-4">
+                <label class="label">
+                    <span class="text-white">Confirm Password</span>
+                </label>
+                <input type="password" placeholder="Confirm your password" formControlName="confirmPassword" class="input input-bordered w-full" [ngClass]="{ 'input-error': submitted && f['confirmPassword'].errors }" />
+                <div *ngIf="submitted && f['confirmPassword'].errors" class="text-error mt-1">
+                    <span *ngIf="f['confirmPassword'].errors['required']">Please confirm your password</span>
+                    <span *ngIf="f['confirmPassword'].errors['mustMatch']">Passwords must match</span>
+                </div>
+            </div>
+            <div class="flex justify-between items-center mt-6 flex-col">
+                <button [disabled]="loading" class="btn btn-primary w-full mb-6">
+                    <span *ngIf="loading" class="loading loading-spinner"></span>
+                    Register
+                </button>
+                <span class="text-white mb-3 lg:mb-0">Already have an account? <a [routerLink]="['/auth/login']" class="link">Login</a></span>
+            </div>
+        </form>
+    </div>
+</div>
