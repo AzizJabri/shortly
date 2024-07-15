@@ -7,8 +7,8 @@
     <!-- Short URL and Button Container -->
     <div class="flex flex-col md:flex-row md:items-center md:space-x-4 md:w-auto">
         <!-- Short URL -->
-        <a href="http://localhost:3000/{{link.short_url}}" class="link-primary mb-2 md:mb-0 md:w-auto md:truncate" target="_blank">
-            http://localhost:3000/{{ link.short_url }}
+        <a href="{{BACKEND_URL}}/{{link.short_url}}" class="link-primary mb-2 md:mb-0 md:w-auto md:truncate" target="_blank">
+            {{BACKEND_URL}}/{{ link.short_url }}
         </a>
         
         <!-- Button -->
