@@ -1,0 +1,38 @@
+<div class="flex flex-col md:flex-row justify-center min-h-screen md:mx-12 py-2 md:py-12 items-center space-x-2 space-y-2">
+<form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <div class="w-full max-w-lg bg-base-200 p-8 rounded-lg shadow-lg">
+        <h4 class="text-3xl font-bold mb-6 text-white text-center">Create a new link</h4>
+        <p class="mb-6">Enter the URL below to create a new link.</p>
+        
+        <div class="mb-4">
+            <label class="label">
+                <span class="text-white
+                ">Title</span>
+            </label>
+            <input type="text" placeholder="title" formControlName="title" class="input input-bordered w-full" [ngClass]="{ 'input-error': submitted && f['title'].errors }" />
+            <div *ngIf="submitted && f['title'].errors" class="text-error mt-1">
+                <span *ngIf="f['title'].errors['required']">Title is required</span>
+            </div>
+        </div>
+
+        <div class="mb-4">
+            <label class="label">
+                <span class="text-white
+                ">URL</span>
+            </label>
+            <input type="url" placeholder="https://example.com" formControlName="long_url" class="input input-bordered w-full" [ngClass]="{ 'input-error': submitted && f['long_url'].errors }" />
+            <div *ngIf="submitted && f['long_url'].errors" class="text-error mt-1">
+                <span *ngIf="f['long_url'].errors['required']">URL is required</span>
+                <span *ngIf="f['long_url'].errors['pattern']">Invalid URL</span>
+            </div>
+        </div>
+        <div class="flex justify-between items-center mt-6 flex-col">
+        <button [disabled]="loading" class="btn btn-primary w-full mb-6">
+            <span *ngIf="loading" class="loading loading-spinner"></span>
+            Create link
+        </button>
+        </div>
+    </div>
+</form>
+
+</div>

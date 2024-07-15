@@ -15,7 +15,9 @@ export class AnonymousLinkService {
 
   createAnonymousLink(long_url: string) {
     
-    return this._client.post(`${environment.BASE_URL}/anonymous`, { long_url }).pipe( // Replace 'map' with 'pipe'
+    return this._client.post(`${environment.BASE_URL}/anonymous`, { long_url }, {
+      withCredentials: true
+    }).pipe( // Replace 'map' with 'pipe'
       map((response: any) => { 
         document.cookie = `session=${response.link.session}; max-age=86400; path=/`; // Add this line
         return response;

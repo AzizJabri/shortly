@@ -1,5 +1,5 @@
 const router = require("express").Router()
-const {createLink, getLinks, deleteLink} = require("../controllers/links")
+const {createLink, getLinks, deleteLink } = require("../controllers/links")
 const {limiter} = require("../utils/limiter")
 
 router.post("/", limiter, createLink)

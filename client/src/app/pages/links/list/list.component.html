@@ -1,0 +1,79 @@
+<div class="flex flex-row justify-end px-12 py-5">
+<button class="btn btn-error" (click)="deleteSelected()" [disabled]="selectedLinks.length == 0">Delete Selected</button>
+</div>
+<div class="flex flex-col items-center min-h-screen md:px-12">
+    <div class="overflow-x-auto w-full bg-base-300 rounded-lg">
+        <table class="table">
+          <!-- head -->
+          <thead>
+            <tr>
+              <th>
+                <label>
+                  <input type="checkbox" class="checkbox" (click)="selectAll()" [checked]="selectedLinks.length == links.length" />
+                </label>
+              </th>
+              <th>Title</th>
+              <th>Long URL</th>
+              <th>Short URL</th>
+              <th>Created At</th>
+              <th>Total Visits</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody class="bg-base-200">
+            <!-- row 1 -->
+             <tr *ngIf="links.length == 0">
+              <td colspan="7">
+                <p class="text-center">No links found</p>
+              </td>
+            </tr>
+            <tr *ngFor="let link of links">
+              <th>
+                <label>
+                  <input type="checkbox" class="checkbox" [checked]="selectedLinks.includes(link)" (click)="selectLink(link)" />
+                </label>
+              </th>
+              <td>
+                {{link.title}}
+              </td>
+              <td>
+                <a href="{{link.long_url}}" target="_blank" class="link link-primary">{{link.long_url | slice:0:50}} {{link.long_url.length > 50 ? '...' : ''}}</a>
+              </td>
+              <td>
+                <a href="http://localhost:3000/{{link.short_url}}" target="_blank" class="link link-primary">{{link.short_url}}</a>
+              </td>
+                <td>
+                    {{link.createdAt | date:'medium'}}
+                </td>
+                <td>
+                    {{link.totalVisits}}
+                </td>
+              <th>
+                <button class="btn btn-sm btn-ghost hover:text-warning">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" class="inline-block w-6 h-6 stroke-current" viewBox="0 0 24 24"><path d="M7.127 22.562l-7.127 1.438 1.438-7.128 5.689 5.69zm1.414-1.414l11.228-11.225-5.69-5.692-11.227 11.227 5.689 5.69zm9.768-21.148l-2.816 2.817 5.691 5.691 2.816-2.819-5.691-5.689z"/></svg>
+                </button>
+                <button class="btn btn-sm btn-ghost hover:text-error" (click)="delete(link)">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="inline-block w-6 h-6 stroke-current">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                  </svg>
+                </button>
+              </th>
+            </tr>
+          </tbody>
+          <!-- foot -->
+          <tfoot>
+            <!--Pagination-->
+            <tr>
+              <td colspan="7">
+                <div class="flex justify-center items-center">
+                  <div class="join">
+                    <button class="join-item btn bg-base-100" (click)="previousPage()" [disabled]="currentPage <= 1">Previous</button>
+                    <button class="join-item btn bg-base-100">Page {{ currentPage }} / {{ totalPages }}</button>
+                    <button class="join-item btn bg-base-100" (click)="nextPage()" [disabled]="currentPage >= totalPages">Next</button>
+                  </div>
+                </div>
+              </td>
+          </tfoot>
+        </table>
+      </div>
+</div>

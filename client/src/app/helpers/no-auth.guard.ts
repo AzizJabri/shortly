@@ -17,18 +17,17 @@ export class NoAuthGuard implements CanActivate {
       return true;
     }
     
-    return this.authService.me().pipe(
-      map(response => {
-        if (response && response.type === 'success') {
-          this.authService.setUserData(response.user);
+    return this.authService.user$.pipe(
+      take(1),
+      map(user => {
+        if (!user) {
+          return true;
+        } else {
           this.router.navigate(['/dashboard']);
           return false;
-        } else {
-          this.authService.clearUserData();
-          return true;
+
         }
       })
-    )
-
+    );
   }
 }

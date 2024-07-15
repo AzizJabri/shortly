@@ -13,7 +13,7 @@ import {environment} from '../../environment/environment';
 })
 export class AuthService {
 
-  private userSubject = new BehaviorSubject<User | null>(null);
+  private userSubject = new BehaviorSubject<User | undefined | null>(undefined);
   public user$ = this.userSubject.asObservable();
 
   public isLoadingSubject = new BehaviorSubject<boolean>(true);
@@ -24,8 +24,9 @@ export class AuthService {
     if (access_token) {
       this.me().pipe(
         tap(response => {
+          console.log(response)
           if (response && response.type === 'success') {
-            this.setUserData(response.user);
+            this.userSubject.next(response.user);
           } else {
             this.clearUserData();
           }
@@ -33,6 +34,7 @@ export class AuthService {
         finalize(() => this.isLoadingSubject.next(false))
       ).subscribe();
     } else {
+      this.clearUserData();
       this.isLoadingSubject.next(false);
     }
   }
@@ -44,9 +46,8 @@ export class AuthService {
       .pipe(
         tap((response) => {
           if (response.type === 'success') {
-            this.setUserData(response.user);
-            localStorage.setItem('access_token', response.access_token);
-            localStorage.setItem('refresh_token', response.refresh_token);
+            this.setToken(response);
+            this.setUser(response.user);
           }
         }),
         finalize(() => this.isLoadingSubject.next(false)) // Stop loading
@@ -65,22 +66,32 @@ export class AuthService {
     return this._client.get<MeResponse>(`${environment.BASE_URL}/auth/me`);
   }
 
-  refreshToken(refresh_token: string): Observable<any> {
+  refreshToken(): Observable<any> {
+    const refresh_token = localStorage.getItem('refresh_token');
     this.isLoadingSubject.next(true); // Start loading
     return this._client.post(`${environment.BASE_URL}/auth/refresh`, { refresh_token: refresh_token })
+      .pipe(
+        finalize(() => {
+          this.isLoadingSubject.next(false); // Stop loading
+        }) // Stop loading
+      );
+  }
+
+  verify(token: string): Observable<any> {
+    this.isLoadingSubject.next(true); // Start loading
+    return this._client.post(`${environment.BASE_URL}/auth/verify`, { verification_token: token })
       .pipe(
         finalize(() => this.isLoadingSubject.next(false)) // Stop loading
       );
   }
 
-  setUserData(user: User) {
-    this.userSubject.next(user);
-    localStorage.setItem('user', JSON.stringify(user));
+  setToken(res:any) {
+    localStorage.setItem('access_token', res.access_token);
+    localStorage.setItem('refresh_token', res.refresh_token);
   }
 
   clearUserData() {
     this.userSubject.next(null);
-    localStorage.removeItem('user');
     localStorage.removeItem('access_token');
     localStorage.removeItem('refresh_token');
   }
@@ -89,8 +100,12 @@ export class AuthService {
     this.clearUserData();
   }
 
-  get user(): User | null {
+  get user(): User | null | undefined {
     return this.userSubject.value;
+  }
+
+  setUser(user: User | undefined | null) {
+    this.userSubject.next(user);
   }
 
   isAuthenticated(): boolean {

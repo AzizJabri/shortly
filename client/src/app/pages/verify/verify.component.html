@@ -1,0 +1,22 @@
+<span *ngIf="isLoading" class="loading loading-ring loading-lg text-primary"></span>
+
+<div *ngIf="!isLoading && isSuccessful">
+  <div class="flex flex-col items-center justify-center h-screen">
+    <div class="flex flex-col items-center justify-center">
+      <img src="assets/valid.svg" alt="verified" class="w-12 h-12" />
+      <h1 class="text-2xl font-bold text-success mt-4">Email Verified</h1>
+      <p class="text-base text-center text-success mt-2">You can now login to your account</p>
+      <a href="/auth/login" class="btn btn-success btn-wide rounded-full mt-4">Login</a>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="!isLoading && !isSuccessful">
+  <div class="flex flex-col items-center justify-center h-screen">
+    <div class="flex flex-col items-center justify-center">
+      <img src="assets/invalid.svg" alt="invalid" class="w-12 h-12 fill-white" />
+      <h1 class="text-2xl font-bold text-error mt-4">Invalid Token</h1>
+      <p class="text-base text-center text-error mt-2">The token you provided is either invalid or has expired</p>
+    </div>
+  </div>
+</div>

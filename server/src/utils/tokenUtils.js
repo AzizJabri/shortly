@@ -29,6 +29,20 @@ const generateRefreshToken = (user) => {
     return token;
 }
 
+const generateVerificationToken = (user) => {
+    payload = {
+        user: {
+            id: user._id,
+            email: user.email,
+        },
+        type: 'verify',
+    };
+    const token = jwt.sign(payload, JWT_SECRET, {
+        expiresIn: '1d',
+    });
+    return token;
+}
+
 const verifyToken = (token) => {
     try {
         const decoded = jwt.verify(token, JWT_SECRET);
@@ -42,4 +56,5 @@ module.exports = {
     generateAccessToken,
     generateRefreshToken,
     verifyToken,
+    generateVerificationToken
 }

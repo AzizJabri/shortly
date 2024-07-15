@@ -1,0 +1,25 @@
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import {environment} from '../../environment/environment';
+import { LinksResponse } from '../models/responses/links-response';
+@Injectable({
+  providedIn: 'root'
+})
+export class LinkService {
+
+  constructor(private _client : HttpClient) { }
+
+  getLinks(search: string = '', page: number = 1, limit : number = 10) {
+    let params = new HttpParams().set('page', page).set('limit', limit).set('search', search);
+    return this._client.get<LinksResponse>(`${environment.BASE_URL}/links`,{params});
+  }
+
+  createLink(long_url : string, title : string) {
+    return this._client.post(`${environment.BASE_URL}/links`, { long_url, title });
+
+  }
+
+  deleteLink(id: string) {
+    return this._client.delete(`${environment.BASE_URL}/links/${id}`);
+  }
+}

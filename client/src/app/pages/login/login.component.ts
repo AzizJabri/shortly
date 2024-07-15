@@ -56,7 +56,7 @@ export class LoginComponent implements OnInit {
             .pipe(first())
             .subscribe({
                 next: () => {
-                    // get return url from query parameters or default to home page
+                    this.alertService.success('Login successful', { keepAfterRouteChange: true });
                     const next = this.route.snapshot.queryParams['next'] || '/dashboard';
                     this.router.navigate([next]);
                 },

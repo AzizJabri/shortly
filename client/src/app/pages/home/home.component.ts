@@ -50,12 +50,12 @@ export class HomeComponent implements OnInit {
     this.loading = true;
     this.anonymousLinkService.createAnonymousLink(this.f['long_url'].value)
         .subscribe({
-            next: (link) => {
-              console.log(link)
+            next: ({link}) => {
                 this.loading = false;
+                this.links.push(link);
             },
             error: error => {
-              this.alertService.error(error.error);
+              this.alertService.error(error.error.message);
               this.loading = false;
               setTimeout(() => {
                   this.alertService.clear();

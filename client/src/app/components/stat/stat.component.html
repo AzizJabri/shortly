@@ -1,0 +1,11 @@
+
+<div class="stat">
+    <div class="stat-title">{{this.title}}</div>
+    <div class="stat-value">{{this.value}}</div>
+    <div *ngIf="premium && !date" class="stat-desc" ngClass="{'stat-desc--premium': premium}">
+        <span *ngIf="stat" [ngClass]="{'text-success': stat.percentage > 0, 'text-error': stat.percentage < 0}">
+            {{stat.percentage > 0 ? '↗' : '↘'}}{{stat.percentage}}%
+        </span>
+    </div>
+    <span class="stat-desc" *ngIf="date">{{date}}</span>
+</div>

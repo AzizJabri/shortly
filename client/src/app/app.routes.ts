@@ -9,6 +9,12 @@ import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { MainComponent } from './layouts/main/main.component';
 import { AuthGuard } from './helpers/auth.guard';
 import { NoAuthGuard } from './helpers/no-auth.guard';
+import { DashboardComponent as DashboardLayout } from './layouts/dashboard/dashboard.component';
+import { VerifyComponent } from './pages/verify/verify.component';
+import { CreateComponent } from './pages/links/create/create.component';
+import { UpdateComponent } from './pages/links/update/update.component';
+import { NotFoundComponent } from './pages/not-found/not-found.component';
+import { ListComponent } from './pages/links/list/list.component';
 
 //register routes
 export const routes: Routes = [
@@ -42,13 +48,46 @@ export const routes: Routes = [
             {
                 path: 'register',
                 component: RegisterComponent
+            },
+            {
+                path: 'verify',
+                component: VerifyComponent
             }
         ]
     },
     {
         path: 'dashboard',
-        component: DashboardComponent,
-        canActivate: [AuthGuard]
+        component: DashboardLayout,
+        canActivate: [AuthGuard],
+        children: [
+            {
+                path: '',
+                component: DashboardComponent
+            }
+        ]
+    },
+    {
+        path: 'links',
+        component: DashboardLayout,
+        canActivate: [AuthGuard],
+        children: [
+            {
+                path: '',
+                component: ListComponent
+            },
+            {
+                path: 'new',
+                component: CreateComponent
+            },
+            {
+                path: 'edit/:id',
+                component: UpdateComponent
+            }
+        ]
+    },
+    {
+        path: '**',
+        component: NotFoundComponent
     }
 
 ];

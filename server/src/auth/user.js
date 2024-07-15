@@ -1,9 +1,9 @@
 const user = require("../models/User");
-const {generateAccessToken, generateRefreshToken} = require('../utils/tokenUtils');
+const {generateAccessToken, generateRefreshToken, generateVerificationToken, verifyToken} = require('../utils/tokenUtils');
 const {isEmail} = require("validator");
 const {comparePassword, hashPassword, isValidPassword } = require("../utils/passwordUtils");
 const { v4: uuidv4 } = require('uuid');
-
+const token = require("../models/Token");
 
 const login = async (req, res) => {
     try{
@@ -17,6 +17,9 @@ const login = async (req, res) => {
         const userExists = await user.findOne({email});
         if(!userExists){
             return res.status(400).json({type:"error", message:"Invalid email or password"});
+        }
+        if(!userExists.isVerified){
+            return res.status(400).json({type:"error", message:"Please verify your account to login"});
         }
         const isMatch = await comparePassword(password, userExists.password);
         if(!isMatch){
@@ -50,13 +53,21 @@ const register = async (req, res) => {
             return res.status(400).json({type:"error", message:"User already exists"});
         }
         const hashedPassword = await hashPassword(password);
+
         const newUser = new user({
             email,
             password: hashedPassword,
             id: uuidv4(),
             role: "user",
-            plan: "free"
+            plan: "free",
+            isVerified: false
         });
+
+        const newUserToken = new token({
+            token: generateVerificationToken(newUser),
+            email: newUser.email
+        });
+        await newUserToken.save();
         await newUser.save();
         return res.status(201).json({type:"success", message:"User created successfully"});
     } catch (error) {
@@ -64,6 +75,33 @@ const register = async (req, res) => {
         return res.status(500).json({
             message: "Internal server error"
         });
+    }
+}
+
+const verify = async (req, res) => {
+    try {
+        const {verification_token} = req.body;
+        if(!token){
+            return res.status(400).json({type:"error", message:"Token is required"});
+        }
+        const tokenExists = await token.findOne({ token : verification_token});
+        if(!tokenExists){
+            return res.status(400).json({type:"error", message:"Invalid token"});
+        }
+        const userExists = await user.findOne({email:tokenExists.email});
+        if(!userExists){
+            return res.status(400).json({type:"error", message:"User not found"});
+        }
+        if(userExists.isVerified){
+            return res.status(400).json({type:"error", message:"Account already verified"});
+        }
+        userExists.isVerified = true;
+        await userExists.save();
+        await token.deleteOne({token:verification_token});
+        return res.status(200).json({type:"success", message:"Account verified successfully"});
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({type:"error", message:"Internal server error"});
     }
 }
 
@@ -87,15 +125,15 @@ const refreshToken = async (req, res) => {
         if(!refresh_token){
             return res.status(400).json({type:"error", message:"Refresh token is required"});
         }
-        const {user, type} = verifyToken(refresh_token);
+        const {user:token_user, type} = verifyToken(refresh_token);
         if(type !== "refresh"){
             return res.status(401).json({type:"error", message:"Invalid token"});
         }
-        const userExists = await user.findById(user.id);
+        const userExists = await user.findById(token_user.id);
         if(!userExists){
             return res.status(404).json({type:"error", message:"User not found"});
         }
-        const access_token = generateAccessToken({id:user._id});
+        const access_token = generateAccessToken(userExists);
         return res.status(200).json({type:"success", access_token});
     } catch (error) {
         console.log(error);
@@ -106,6 +144,7 @@ const refreshToken = async (req, res) => {
 module.exports = {
     login,
     register,
+    verify,
     me,
     refreshToken
 }

@@ -10,6 +10,8 @@ const links = require("./src/routes/links");
 const main = require("./src/routes/main");
 
 const anonymous = require("./src/routes/anonymousLinks");
+
+const stats = require("./src/routes/stats");
 //
 
 
@@ -36,6 +38,8 @@ if(process.env.NODE_ENV === "production") {
 app.use("/api/v1/auth", auth);
 
 app.use("/api/v1/links", isAuthenticated, links);
+
+app.use("/api/v1/stats", isAuthenticated, stats);
 
 app.use("/api/v1/anonymous", anonymous);
 

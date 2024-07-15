@@ -1,0 +1,48 @@
+<div class="flex flex-col min-h-screen">
+    <form (submit)="filter($event)" class="input input-bordered flex items-center gap-2 p-4 mb-10">
+      <input type="text" name="filterText" class="grow" placeholder="Search" [(ngModel)]="filterText">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 16 16"
+        fill="currentColor"
+        class="h-4 w-4 opacity-70">
+        <path
+          fill-rule="evenodd"
+          d="M9.965 11.026a5 5 0 1 1 1.06-1.06l2.755 2.754a.75.75 0 1 1-1.06 1.06l-2.755-2.754ZM10.5 7a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0Z"
+          clip-rule="evenodd" />
+      </svg>
+    </form>
+  
+    <div class="flex-grow">
+      <ul>
+        <li *ngFor="let link of links" class="bg-base-200 p-2 px-4 rounded-xl mb-2 shadow-lg border border-base-300">
+          <div class="flex flex-col">
+            <div class="flex items-center justify-between">
+              <p class="text-sm text-primary">{{createdAtToDate(link.createdAt)}}</p>
+              <button class="btn btn-ghost btn-sm btn-square hover:text-error" (click)="delete(link)">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="inline-block w-6 h-6 stroke-current">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+              </button>
+            </div>
+            <h1>{{link.title}}</h1>
+            <div class="flex items-center space-x-2">
+              <a href="http://localhost:3000/{{link.short_url}}" target="_blank" class="text-primary">http://localhost:3000/{{link.short_url}}</a>
+            </div>
+          </div>
+        </li>
+        <li *ngIf="links.length == 0" class="bg-base-200 py-2 rounded-xl">
+          <p class="text-center">No links found</p>
+        </li>
+      </ul>
+    </div>
+  
+    <div class="flex justify-center items-center">
+        <div class="join">
+            <button class="join-item btn bg-base-300" (click)="previousPage()" [disabled]="currentPage <= 1">Previous</button>
+            <button class="join-item btn bg-base-300">Page {{ currentPage }} / {{ totalPages }}</button>
+            <button class="join-item btn bg-base-300" (click)="nextPage()" [disabled]="currentPage >= totalPages">Next</button>
+        </div>
+    </div>
+  </div>
+  
