@@ -18,7 +18,7 @@ export class AnonymousLinkComponent {
     constructor() { }
 
     copyToClipboard() {
-        navigator.clipboard.writeText(this.BACKEND_URL + this.link.short_url).then(() => {
+        navigator.clipboard.writeText(this.BACKEND_URL + "/" + this.link.short_url).then(() => {
             this.text = 'Copied!';
             this.color = 'btn-success';
             setTimeout(() => {
