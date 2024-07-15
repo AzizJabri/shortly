@@ -3,11 +3,14 @@ import { LinkService } from '../../../services/link.service';
 import { AlertService } from '../../../services/alert.service';
 import { Link } from '../../../models/link';
 import { CommonModule } from '@angular/common';
+import {  RouterLink } from '@angular/router';
+import { environment } from '../../../../environment/environment';
+import { StatsService } from '../../../services/stats.service';
 
 @Component({
   selector: 'app-list',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterLink],
   templateUrl: './list.component.html',
   styleUrl: './list.component.scss'
 })
@@ -17,8 +20,9 @@ export class ListComponent {
   filterText = '';
   currentPage = 1;
   totalPages = 1;
+  BACKEND_URL = environment.BACKEND_URL;
 
-  constructor(private linkService: LinkService, private alertService: AlertService) {
+  constructor(private linkService: LinkService, private alertService: AlertService, private statsService : StatsService) {
     this.getLinks();
   }
 
@@ -65,6 +69,9 @@ export class ListComponent {
   deleteSelected() {
     for (const link of this.selectedLinks) {
       this.linkService.deleteLink(link.short_url).subscribe({
+        next: () => {
+          this.statsService.initRemaining();
+        },
         error: error => {
           this.alertService.error(error.error);
           setTimeout(() => {
@@ -92,7 +99,9 @@ export class ListComponent {
   delete(link: Link) {
     this.linkService.deleteLink(link.short_url).subscribe({
       next: () => {
-        this.links = this.links.filter((l) => l._id !== link._id);
+        this.getLinks();
+        this.statsService.initRemaining();
+
         setTimeout(() => {
           this.alertService.success('Link deleted successfully');
           setTimeout(() => {

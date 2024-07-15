@@ -4,6 +4,7 @@ import { Link } from '../../models/link';
 import { AlertService } from '../../services/alert.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { environment } from '../../../environment/environment';
 
 @Component({
   selector: 'app-links-list',
@@ -17,6 +18,7 @@ export class LinksListComponent {
   filterText = '';
   currentPage = 1;
   totalPages = 1;
+  BACKEND_URL = environment.BACKEND_URL;
 
   constructor(private linkService: LinkService, private alertService: AlertService) {
     this.getLinks();

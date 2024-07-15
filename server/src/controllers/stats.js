@@ -135,7 +135,9 @@ const getStatsPremium = async (req, res) => {
 
 const getLinksCreatedToday = async (req, res) => {
     try {
-        const links = await Link.find({ user: req.user.id }).where('createdAt').gte(new Date().setHours(0, 0, 0, 0));
+        const now = new Date();
+        const last24Hours = new Date(now.getTime() - (24 * 60 * 60 * 1000));
+        const links = await Link.find({ user: req.user.id, createdAt: { $gte: last24Hours } }).countDocuments();
         return res.status(200).json({ type: "success", links });
     } catch (error) {
         console.log(error);

@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } 
 import { ActivatedRoute, Router } from '@angular/router';
 import { AlertService } from '../../../services/alert.service';
 import { LinkService } from '../../../services/link.service';
+import { StatsService } from '../../../services/stats.service';
 
 @Component({
   selector: 'app-create',
@@ -22,7 +23,8 @@ export class CreateComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router, 
     private alertService : AlertService,
-    private linkService : LinkService
+    private linkService : LinkService,
+    private statsService : StatsService
   ) { }
 
   ngOnInit() {
@@ -44,6 +46,7 @@ export class CreateComponent implements OnInit {
     this.linkService.createLink(this.f['long_url'].value, this.f['title'].value)
       .subscribe({
         next: () => {
+          this.statsService.setRemainingLinks(this.statsService.remaining + 1);
           this.loading = false;
           this.alertService.success('Link created successfully', { keepAfterRouteChange: true });
           this.router.navigate(['/dashboard']);

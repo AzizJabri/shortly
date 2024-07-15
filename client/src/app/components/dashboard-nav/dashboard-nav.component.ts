@@ -4,6 +4,8 @@ import { User } from '../../models/user';
 import { CommonModule } from '@angular/common';
 import {  Router, RouterLink } from '@angular/router';
 import { AlertService } from '../../services/alert.service';
+import { StatsService } from '../../services/stats.service';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-dashboard-nav',
@@ -14,10 +16,12 @@ import { AlertService } from '../../services/alert.service';
 })
 export class DashboardNavComponent {
   user!: User | null | undefined;
-  constructor(public authService : AuthService, private router : Router, private alertService : AlertService){
+  remaining : number;
+  
+  constructor(public authService : AuthService, private router : Router, private alertService : AlertService, public statsService : StatsService){
     this.authService.user$.subscribe(x => this.user = x);
-    console.log(this.user)
-  }
+    this.remaining = statsService.remaining;
+  } 
 
   logout(){
     this.authService.logout();

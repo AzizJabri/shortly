@@ -119,6 +119,47 @@ const getLinks = async (req, res) => {
     }
 };
 
+const getLink = async (req, res) => {
+    try {
+        const { id } = req.params;
+        if (!id) {
+            return res.status(400).json({ type: "error", message: "ID is required" });
+        }
+        const link = await Link.findOne({ short_url: id, user: req.user.id });
+        if (!link) {
+            return res.status(404).json({ type: "error", message: "Link not found" });
+        }
+        return res.status(200).json({ type: "success", link });
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({ type: "error", message: "Internal server error" });
+    }
+}
+
+const updateLink = async (req, res) => {
+    try {
+        const { id } = req.params;
+        if (!id) {
+            return res.status(400).json({ type: "error", message: "ID is required" });
+        }
+        const link = await Link.findOne({ short_url: id, user: req.user.id });
+        if (!link) {
+            return res.status(404).json({ type: "error", message: "Link not found" });
+        }
+        const { title, long_url } = req.body;
+        if (!title || !long_url) {
+            return res.status(400).json({ type: "error", message: "Title and URL are required" });
+        }
+        link.title = title;
+        link.long_url = long_url;
+        await link.save();
+        return res.status(200).json({ type: "success", message: "Link updated successfully", link });
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({ type: "error", message: "Internal server error" });
+    }
+}
+
 const getAnonymousLinks = async (req, res) => {
     try {
         let session_id;
@@ -194,5 +235,7 @@ module.exports = {
     deleteLink,
     visitLink,
     createAnonymousLink,
-    getAnonymousLinks
+    getAnonymousLinks,
+    getLink,
+    updateLink
 }

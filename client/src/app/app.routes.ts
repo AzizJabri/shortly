@@ -1,4 +1,4 @@
-import { Routes } from '@angular/router';
+import { RouterOutlet, Routes } from '@angular/router';
 import { HomeComponent } from './pages/home/home.component';
 import { AboutComponent } from './pages/about/about.component';
 import { PricingComponent } from './pages/pricing/pricing.component';
@@ -56,35 +56,34 @@ export const routes: Routes = [
         ]
     },
     {
-        path: 'dashboard',
+        path: '',
         component: DashboardLayout,
         canActivate: [AuthGuard],
         children: [
             {
-                path: '',
+                path: 'dashboard',
                 component: DashboardComponent
-            }
-        ]
-    },
-    {
-        path: 'links',
-        component: DashboardLayout,
-        canActivate: [AuthGuard],
-        children: [
-            {
-                path: '',
-                component: ListComponent
             },
             {
-                path: 'new',
-                component: CreateComponent
+                path: 'links',
+                children: [
+                    {
+                        path: '',
+                        component: ListComponent
+                    },
+                    {
+                        path: 'new',
+                        component: CreateComponent
+                    },
+                    {
+                        path: 'edit/:id',
+                        component: UpdateComponent
+                    }
+                ]
             },
-            {
-                path: 'edit/:id',
-                component: UpdateComponent
-            }
         ]
     },
+    
     {
         path: '**',
         component: NotFoundComponent

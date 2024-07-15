@@ -17,8 +17,8 @@
     </div>
     <div class="navbar-center hidden md:flex" >
         <div class="flex flex-col" *ngIf="this.user?.plan != 'premium'">
-            <p class="text-xs">2/5 links created today ({{this.authService.user?.plan}}) | <a *ngIf="authService.user?.plan!='premium'" href="/pricing" class="link-primary">View plans</a></p>
-            <progress class="progress progress-primary" value="40" max="100"></progress>
+            <p class="text-xs">{{this.statsService.remaining}}/5 links created today ({{this.authService.user?.plan}}) | <a *ngIf="authService.user?.plan!='premium'" href="/pricing" class="link-primary">View plans</a></p>
+            <progress class="progress progress-primary" value="{{this.statsService.remaining}}" max="5"></progress>
         </div>
         <div class="flex flex-col" *ngIf="this.authService.user?.plan == 'premium'">
             <p class="text-xs">You're on the premium plan | <a href="/pricing" class="link-primary">Manage plans</a></p>
@@ -54,11 +54,10 @@
           <li>
             <a class="justify-between">
               Profile
-              <span class="badge">New</span>
             </a>
           </li>
           <li><a>Settings</a></li>
-          <li><a (click)="logout()">Logout</a></li>
+          <li><a (click)="logout()" class="text-error">Logout</a></li>
         </ul>
       </div>
     </div>

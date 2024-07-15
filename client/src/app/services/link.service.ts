@@ -2,6 +2,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import {environment} from '../../environment/environment';
 import { LinksResponse } from '../models/responses/links-response';
+import { LinkResponse } from '../models/responses/link-response';
 @Injectable({
   providedIn: 'root'
 })
@@ -14,9 +15,18 @@ export class LinkService {
     return this._client.get<LinksResponse>(`${environment.BASE_URL}/links`,{params});
   }
 
+  getLink(id: string) {
+    return this._client.get<LinkResponse>(`${environment.BASE_URL}/links/${id}`);
+  }
+
   createLink(long_url : string, title : string) {
     return this._client.post(`${environment.BASE_URL}/links`, { long_url, title });
 
+  }
+
+  updateLink(id: string, long_url : string, title : string) {
+    return this._client.patch(`${environment.BASE_URL}/links/${id}`, { long_url, title
+    });
   }
 
   deleteLink(id: string) {
