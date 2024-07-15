@@ -2,6 +2,7 @@ const app = require("express")();
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const logger = require('morgan');
+const {CLIENT_URL} = require("./src/configs");
 //ROUTES IMPORTS
 const auth = require("./src/routes/auth");
 
@@ -21,7 +22,7 @@ const {isAuthenticated} = require("./src/middlewares/isAuthenticated");
 app.set('trust proxy', true);
 //connect middlewares
 app.use(cors({
-    origin:['http://localhost:4200'],
+    origin:[CLIENT_URL],
     credentials:true
     }));
 app.use(bodyParser.json());
