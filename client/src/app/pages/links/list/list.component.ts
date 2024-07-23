@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 import { LinkService } from '../../../services/link.service';
 import { AlertService } from '../../../services/alert.service';
 import { Link } from '../../../models/link';
@@ -6,6 +6,7 @@ import { CommonModule } from '@angular/common';
 import {  RouterLink } from '@angular/router';
 import { environment } from '../../../../environment/environment';
 import { StatsService } from '../../../services/stats.service';
+import { AuthService } from '../../../services/auth.service';
 
 @Component({
   selector: 'app-list',
@@ -22,9 +23,12 @@ export class ListComponent {
   totalPages = 1;
   BACKEND_URL = environment.BACKEND_URL;
 
-  constructor(private linkService: LinkService, private alertService: AlertService, private statsService : StatsService) {
+  constructor(private linkService: LinkService, private alertService: AlertService, private statsService : StatsService, public authService: AuthService) {
     this.getLinks();
   }
+
+  @ViewChild('qrCode') qrCode : HTMLImageElement | undefined;
+  @ViewChild('qrModal') qrModal : ElementRef | undefined;
 
   getLinks() {
     this.linkService.getLinks(this.filterText, this.currentPage).subscribe({
@@ -88,6 +92,24 @@ export class ListComponent {
         this.alertService.clear();
       }, 3000);
     }, 100);
+  }
+
+  generateQrCode(link: Link) {
+    this.linkService.generateQrCode(link.short_url).subscribe({
+      next: (res) => {  
+        //replace image in img qrCode 
+        this.qrCode = document.getElementById('qrCode') as HTMLImageElement;
+        this.qrCode.width = 300;
+        this.qrCode.height = 300;
+        this.qrCode.src = res.qrCode;
+      },
+      error: error => {
+        this.alertService.error(error.error);
+        setTimeout(() => {
+          this.alertService.clear();
+        }, 3000);
+      }
+    });
   }
 
   filter(event: any) {

@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import {environment} from '../../environment/environment';
 import { LinksResponse } from '../models/responses/links-response';
 import { LinkResponse } from '../models/responses/link-response';
+import { QrResponse } from '../models/responses/qr-response';
 @Injectable({
   providedIn: 'root'
 })
@@ -31,5 +32,9 @@ export class LinkService {
 
   deleteLink(id: string) {
     return this._client.delete(`${environment.BASE_URL}/links/${id}`);
+  }
+
+  generateQrCode(id: string) {
+    return this._client.get<QrResponse>(`${environment.BASE_URL}/links/${id}/qr`);
   }
 }

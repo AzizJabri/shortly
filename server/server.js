@@ -15,7 +15,6 @@ const anonymous = require("./src/routes/anonymousLinks");
 const stats = require("./src/routes/stats");
 //
 
-
 //MIDDLEWARES IMPORTS
 const {isAuthenticated} = require("./src/middlewares/isAuthenticated");
 //

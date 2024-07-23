@@ -3,6 +3,8 @@ const Click = require('../models/Click')
 const AnonymousLink = require('../models/AnonymousLink');
 const {generateUrl} = require('../utils/urlUtils');
 const uuid = require('uuid');
+const QRCode = require('qrcode');
+const {CLIENT_URL} = require("../configs");
 
 const createLink = async (req, res) => {
     try {
@@ -226,6 +228,23 @@ const visitLink = async (req, res) => {
     }
 }
 
+const generateQRCode = async (req, res) => {
+    try {
+        const { id } = req.params;
+        if (!id) {
+            return res.status(400).json({ type: "error", message: "ID is required" });
+        }
+        const link = await Link.findOne({ short_url: id });
+        if (!link) {
+            return res.status(404).json({ type: "error", message: "Link not found" });
+        }
+        const qrCode = await QRCode.toDataURL(`${req.headers.host}/${link.short_url}`);
+        return res.status(200).json({ type: "success", qrCode });
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({ type: "error", message: "Internal server error" });
+    }
+}
 
 
 
@@ -237,5 +256,6 @@ module.exports = {
     createAnonymousLink,
     getAnonymousLinks,
     getLink,
-    updateLink
+    updateLink,
+    generateQRCode
 }
