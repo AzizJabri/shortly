@@ -4,7 +4,7 @@
         <router-outlet />
     </div>
     <div *ngIf="this.isLoading">
-        <div class="flex items-center justify-center h-screen">
+        <div class="flex items-center justify-center h-screen flex-col">
             <span class="loading loading-ring loading-lg pb-4"></span>
             <p class="text-gray-500">{{text}}</p>
         </div>
