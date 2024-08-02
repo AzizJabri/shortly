@@ -14,11 +14,15 @@ import { AuthService } from '../../services/auth.service';
 })
 export class MainComponent {
   isLoading = false;
+  text = '';
   constructor(public authService: AuthService) {}
 
   ngOnInit() {
     this.authService.isLoading$.subscribe((loading: boolean) => {
       this.isLoading = loading;
     });
+    setTimeout(() => {
+      this.text = 'Please wait while our backend is starting...';
+    }, 3000);
   }
 }
